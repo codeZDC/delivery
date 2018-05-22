@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuzhi.delivery.mapper.IRoleMapper">
+  <resultMap id="RoleResultMap" type="com.tuzhi.delivery.domain.Role">
+        <id column="id" property="id" />
+    <result column="role_name" property="roleName" />
+    <result column="level" property="level" />
+    <result column="status" property="status" />
+    <result column="remarks" property="remarks" />
+    <result column="created_time" property="createdTime" />
+  </resultMap>
+  <resultMap type="com.tuzhi.delivery.util.TreeNodeVo" id="treeNodeVoMap">
+	<id column="id" property="id" />
+    <result column="pname" property="name" />
+	<collection property="children" ofType="com.tuzhi.delivery.util.TreeNode">
+		<id column="cid" property="id" />
+    	<result column="cname" property="name" />
+    	<result column="pid" property="pid" />
+    	<result column="roleId" property="roleId" />
+	</collection>
+  </resultMap>
+  <sql id="column_Where">
+  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+    	    	<if test="id != null">and id=#{id}</if>
+    	<if test="roleName != null and roleName != '' ">and role_name=#{roleName}</if>
+    	<if test="level != null">and level=#{level}</if>
+    	<if test="status != null">and status=#{status}</if>
+    	<if test="remarks != null and remarks != '' ">and remarks=#{remarks}</if>
+    	<if test="createdTime != null">and created_time=#{createdTime}</if>
+
+    </trim>
+  </sql>
+  <sql id="column_List">
+    id,role_name,level,status,remarks,created_time
+  </sql>
+  
+  <!--
+  	功能：分页查询
+  -->
+  <select id="findRoleList" parameterType="com.tuzhi.delivery.domain.Role" resultMap="RoleResultMap">
+    select	<include refid="column_List" />
+    from t_role
+    <include refid="column_Where" />
+    <if test="sortOrder !=null and sortOrder !='' and sortName != null and sortName != ''">
+    	order by 
+    	    	<if test="'id' == sortName">  id ${sortOrder } </if>
+    	<if test="'roleName' == sortName">  role_name ${sortOrder } </if>
+    	<if test="'level' == sortName">  level ${sortOrder } </if>
+    	<if test="'status' == sortName">  status ${sortOrder } </if>
+    	<if test="'remarks' == sortName">  remarks ${sortOrder } </if>
+    	<if test="'createdTime' == sortName">  created_time ${sortOrder } </if>
+
+    </if>
+    
+  </select>
+  
+  <update id="linkRoleMenu">
+  		insert into t_role_menu (role_id,menu_id) 
+  		<foreach collection="param2" open=" values " separator="," close="" item="menuId">
+  			(#{param1},#{menuId})
+  		</foreach>
+  </update>
+  
+  <select id="getRoleMenu" resultMap="treeNodeVoMap" parameterType="int">
+  		SELECT pm.id id,pm.name pname ,cm.id cid ,cm.name cname ,cm.pid pid , rm.role_id roleId
+		FROM t_menu pm JOIN t_menu cm ON cm.pid = pm.id
+		LEFT JOIN t_role_menu rm ON rm.menu_id = cm.id AND rm.role_id = #{zdc}
+		ORDER BY pm.created_time 
+  </select>
+</mapper>

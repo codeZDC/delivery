@@ -1,0 +1,61 @@
+package com.tuzhi.delivery.service;
+
+import java.util.List;
+
+import com.tuzhi.delivery.base.IBaseService;
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.domain.DeliverySzdt;
+
+/**
+ * @ClassName:IDeliverySzdtService
+ * @Description:业务层接口
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+public interface IDeliverySzdtService extends IBaseService<DeliverySzdt>{
+
+	/**
+	 * @title:findDeliverySzdtList
+	 * @description: 查询列表
+	 * @author 郑德超
+	 * @param deliverySzdt
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	PageInfo<DeliverySzdt> findDeliverySzdtList(DeliverySzdt deliverySzdt);
+	
+	/**
+	 * @title:getDeliverySzdtById
+	 * @description: 根据ID查询信息
+	 * @author 郑德超
+	 * @param id	主键
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	DeliverySzdt getDeliverySzdtById(Integer id);
+	
+	/**
+	 * @title:saveDeliverySzdt
+	 * @description: 新增
+	 * @author 郑德超
+	 * @param deliverySzdt
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	boolean saveDeliverySzdt(DeliverySzdt deliverySzdt);
+	
+	 /**
+	 * @title:editDeliverySzdt
+	 * @description: 修改
+	 * @author 郑德超
+	 * @param deliverySzdt
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	boolean editDeliverySzdt(DeliverySzdt deliverySzdt);
+	
+	/**
+	 * @title:delDeliverySzdt
+	 * @description: 删除
+	 * @author 郑德超
+	 * @param deliverySzdtArr	主键编号集合
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	boolean delDeliverySzdt(List<Integer> deliverySzdtArr);
+}

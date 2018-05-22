@@ -1,0 +1,26 @@
+package com.tuzhi.delivery.mapper;
+
+import java.util.List;
+
+import com.tuzhi.delivery.domain.DeliverySzw;
+
+import tk.mybatis.mapper.common.Mapper;
+
+ /**
+ * @ClassName:DeliverySzwMapper
+ * @Description:数据层接口
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+public interface IDeliverySzwMapper extends Mapper<DeliverySzw> {
+	
+	/**
+	 * @title:findDeliverySzwList
+	 * @description: 查询列表
+	 * @author 郑德超
+	 * @param deliverySzw
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	List<DeliverySzw> findDeliverySzwList(DeliverySzw deliverySzw);
+	
+}

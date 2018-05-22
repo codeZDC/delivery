@@ -1,0 +1,54 @@
+jQuery(function($){
+	//监听show事件
+	$('#myTab a[data-toggle="tab"]').on('show.bs.tab', function (e) {
+//		console.log(e);
+//		var currentTab = $(e.target).data('target');
+//		if(currentTab == 'write') {
+//			Inbox.show_form();
+//		}
+//		else if(currentTab == 'inbox') {
+//			Inbox.show_list();
+//		}
+	})
+	//如果有汇交清单 参数  对象id
+});
+
+
+//获取汇交清单
+$.getJSON(contextPath+'delivery/getDeliveries',{},function(res){
+	console.log(res);
+	showResult(202);
+	//showResult(res.msg); 
+	$('#form-field-9').val(res.msg);
+});
+
+//根据状态来显示审核结果
+function showResult(res){
+	if(res == 199){//草稿
+		 
+	}else if(res == 250){//空项目
+		
+	}else if(res == 208){//审核通过
+		
+		showExaminieMark('examinie-pass.png');
+	}else if(res == 202 || res == 204){//审核不通过
+		showExaminieMark('examinie-decline.png');
+	}else{//审核中
+		showExaminieMark('examining.png');
+	}
+	
+}
+
+//显示审核结果标签 
+function showExaminieMark(mark){
+	
+	var examinieMark = $("#examinieMark");
+	examinieMark.show();
+	examinieMark.attr('src',examinieMark.attr('src-rooPath') + mark);
+}
+
+
+$("#toAdd").on('click',function(){
+	$("#listTabContent").removeClass('active');//关闭清单tab
+	$("#addTanContent").addClass('active');//打开添加tab
+});

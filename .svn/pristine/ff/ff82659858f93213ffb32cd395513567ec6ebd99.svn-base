@@ -1,0 +1,138 @@
+package com.tuzhi.delivery.service.impl;
+
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.domain.Delivery;
+import com.tuzhi.delivery.domain.DeliveryList;
+import com.tuzhi.delivery.domain.Dlxx;
+import com.tuzhi.delivery.domain.User;
+import com.tuzhi.delivery.domain.vo.DeliveriesSearchVo;
+import com.tuzhi.delivery.mapper.IDeliveryListMapper;
+import com.tuzhi.delivery.mapper.IDeliveryMapper;
+import com.tuzhi.delivery.service.IDeliveryService;
+import com.tuzhi.delivery.util.DateUtils;
+import com.tuzhi.delivery.util.Tz;
+
+/**
+ * @author codeZ
+ * @date 2018年3月28日 下午3:42:05
+ * 
+ */
+
+@Service
+public class DeliveryServiceImpl implements IDeliveryService {
+
+	@Autowired
+	private IDeliveryMapper mapper;
+	@Autowired
+	private IDeliveryListMapper deliveryListMapper;
+	
+	//根据userId获取用户汇交信息
+	@Override
+	public Map<String, Object> getDeliveries(Integer userId) {
+		Map<String, Object> map = new HashMap<>();
+		List<Delivery> deliveries = mapper.getDeliveries(userId,DateUtils.getYear());
+		map.put("rows", deliveries);
+		
+		if(deliveries!=null&&deliveries.size()>0){
+			Integer status = deliveries.get(0).getStatus();
+			if(status != null && status != -1){//说明有清单说明了
+				//去查看汇交说明
+				DeliveryList remarks =  mapper.getDeliveryRemarks(userId,DateUtils.getYear());
+				map.put("remarks", remarks);
+			}
+			map.put("status", 200+status);
+		}else{
+			map.put("status", 250);
+			//去查询汇交状态 排除零汇交情况
+			DeliveryList deliveryList =  mapper.getDeliveryRemarks(userId,DateUtils.getYear());
+			
+			if(deliveryList != null && deliveryList.getStatus() == 0) {
+				map.put("status", 251);//零汇交
+				map.put("remarks", deliveryList);
+			}
+			
+		}
+		return map;
+	}
+
+	@Override
+	public boolean toExamine(List<Integer> ids, List<String> types, String remarks,Integer userId ,Integer deliverListId) {
+		//组装用于批量更新的传值类
+		for (int i = 0; i < ids.size(); i++) {
+			mapper.toExamine("t_delivery_"+types.get(i),1,ids.get(i));//修改状态为已提交
+		}
+		//批量更新汇交状态,,修改为草稿0
+		
+		//查询是否已存在汇交清单   如果已存在就更新  不存在就插入
+		DeliveryList list = null;
+		if(deliverListId != null) {//说明存在汇交清单 是被回退的草稿  更新汇交清单再提交
+			list = deliveryListMapper.selectByPrimaryKey(deliverListId);//查新库里的汇交清单
+			list.setDeliverRemarks(remarks);
+			list.setStatus(1);//再次提交审核
+			mapper.undateDeliverStatus(1, userId, list.getYear());//再次提交审核
+			
+			return deliveryListMapper.updateByPrimaryKey(list) > 0;//更新汇交清单
+		}else {
+			//添加汇交说明到t_delivery_list
+			list = new DeliveryList();
+			list.setUserId(userId);
+			list.setYear(DateUtils.getYear());
+			list.setStatus(1);
+			list.setDeliverRemarks(remarks);
+			list.setDeliverTime(new Date());
+			//更新账号汇交状态 
+			mapper.addDeliverStatus(userId, DateUtils.getYear(), 1);//'状态 0零汇交 1已汇交',
+			return deliveryListMapper.insertSelective(list) > 0;
+		}
+		
+	}
+
+	//获取管辖用户 
+	@Override
+	public PageInfo<User> getCompanies(Delivery delivery) {
+		// TODO 分页查询
+		if(delivery.getExamineYear()==null)
+			delivery.setExamineYear(DateUtils.getYear());
+		PageHelper.startPage(delivery.getPageNum(), delivery.getPageSize());
+		PageInfo<User> pageInfo = new PageInfo<User>(mapper.getCompanies(delivery));
+		return pageInfo;
+	}
+
+	@Override
+	public boolean zeroDelivery(Integer userId) {
+		//添加汇交说明到t_delivery_list
+		DeliveryList list = new DeliveryList();
+		list.setUserId(userId);
+		list.setYear(DateUtils.getYear());
+		list.setStatus(0);
+		list.setDeliverTime(new Date());
+		//更新账号汇交状态 
+		mapper.addDeliverStatus(userId, DateUtils.getYear(), 0);//'状态 0零汇交 1已汇交',
+		return deliveryListMapper.insertSelective(list) > 0;
+	}
+
+	@Override
+	public Tz getDeliveriesByParam(Integer year, Integer type) {
+		Tz tz = null;
+		if(type == 0) {//12类归类
+			// status 8 审核成功的项目
+			List<DeliveriesSearchVo> list =   mapper.getDeliveriesByParam(8, year);
+			tz = tz.success().setData(list);
+		}else if(type == 1) {// 按市类区分
+			
+		}
+		
+		return tz;
+	}
+
+	
+}

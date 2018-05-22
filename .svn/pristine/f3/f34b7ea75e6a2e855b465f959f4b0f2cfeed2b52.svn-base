@@ -1,0 +1,5 @@
+//表单点击的时候给表单添加行样式,,使用bootstrap
+$('tr[role=row]').click(function(){
+	$(this).toggleClass('success').siblings().removeClass('success');
+	
+});

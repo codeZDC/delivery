@@ -1,0 +1,57 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuzhi.delivery.mapper.IDeliveryListMapper">
+  <resultMap id="DeliveryListResultMap" type="com.tuzhi.delivery.domain.DeliveryList">
+        <id column="id" property="id" />
+    <result column="user_id" property="userId" />
+    <result column="year" property="year" />
+    <result column="statue" property="statue" />
+    <result column="decline_remarks" property="declineRemarks" />
+    <result column="deliver_remarks" property="deliverRemarks" />
+    <result column="deliver_time" property="deliverTime" />
+    <result column="last_examinie_time" property="lastExaminieTime" />
+    <result column="examinie_user_id" property="examinieUserId" />
+
+  </resultMap>
+  <sql id="column_Where">
+  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+    	    	<if test="id != null">and id=#{id}</if>
+    	<if test="userId != null">and user_id=#{userId}</if>
+    	<if test="year != null">and year=#{year}</if>
+    	<if test="statue != null">and statue=#{statue}</if>
+    	<if test="declineRemarks != null and declineRemarks != '' ">and decline_remarks=#{declineRemarks}</if>
+    	<if test="deliverRemarks != null and deliverRemarks != '' ">and deliver_remarks=#{deliverRemarks}</if>
+    	<if test="deliverTime != null">and deliver_time=#{deliverTime}</if>
+    	<if test="lastExaminieTime != null">and last_examinie_time=#{lastExaminieTime}</if>
+    	<if test="examinieUserId != null">and examinie_user_id=#{examinieUserId}</if>
+
+    </trim>
+  </sql>
+  <sql id="column_List">
+    id,user_id,year,statue,decline_remarks,deliver_remarks,deliver_time,last_examinie_time,examinie_user_id
+  </sql>
+  
+  <!--
+  	功能：分页查询
+  -->
+  <select id="findDeliveryListList" parameterType="com.tuzhi.delivery.domain.DeliveryList" resultMap="DeliveryListResultMap">
+    select	<include refid="column_List" />
+    from t_delivery_list
+    <include refid="column_Where" />
+    <if test="sortOrder !=null and sortOrder !='' and sortName != null and sortName != ''">
+    	order by 
+    	    	<if test="'id' == sortName">  id ${sortOrder } </if>
+    	<if test="'userId' == sortName">  user_id ${sortOrder } </if>
+    	<if test="'year' == sortName">  year ${sortOrder } </if>
+    	<if test="'statue' == sortName">  statue ${sortOrder } </if>
+    	<if test="'declineRemarks' == sortName">  decline_remarks ${sortOrder } </if>
+    	<if test="'deliverRemarks' == sortName">  deliver_remarks ${sortOrder } </if>
+    	<if test="'deliverTime' == sortName">  deliver_time ${sortOrder } </if>
+    	<if test="'lastExaminieTime' == sortName">  last_examinie_time ${sortOrder } </if>
+    	<if test="'examinieUserId' == sortName">  examinie_user_id ${sortOrder } </if>
+
+    </if>
+    
+  </select>
+  
+</mapper>

@@ -1,0 +1,5 @@
+$('#add-menu').click(function(){
+	$('#add_menu_modal').dialog({
+		modal : true
+	});
+});

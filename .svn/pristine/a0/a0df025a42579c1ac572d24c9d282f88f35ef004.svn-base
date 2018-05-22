@@ -1,0 +1,61 @@
+package com.tuzhi.delivery.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.base.BaseServiceImpl;
+import com.tuzhi.delivery.mapper.IUuMapper;
+import com.tuzhi.delivery.domain.Uu;
+import com.tuzhi.delivery.service.IUuService;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+/**
+ * @ClassName:UuServiceImpl
+ * @Description:业务层接口实现类
+ * @author 郑德超
+ * @CreateDate 2018-03-15 14:21:24
+ */
+@Service
+public class UuServiceImpl extends BaseServiceImpl<Uu> implements IUuService {
+	
+	@Autowired
+	private IUuMapper uuMapper;
+ 
+	public PageInfo<Uu> findUuList(Uu uu) {
+		// TODO 分页查询
+		//PageHelper.startPage(uu.getPageNum(), uu.getPageSize());
+		PageInfo<Uu> pageInfo = new PageInfo<Uu>(uuMapper.findUuList(uu));
+		
+		return pageInfo;
+	}
+	
+	public Uu getUuById(Integer id){
+		// TODO 根据ID查询
+		return uuMapper.selectByPrimaryKey(id);
+	}
+	
+	public boolean saveUu(Uu uu){
+		// TODO 新增
+		return uuMapper.insertSelective(uu) > 0;
+	}
+	
+	public boolean editUu(Uu uu){
+		// TODO 修改
+		return uuMapper.updateByPrimaryKeySelective(uu) > 0;
+	}
+	
+	public boolean delUu(List<Integer> uuArr){
+		// TODO	删除
+		Example example = new Example(Uu.class);
+		Criteria c = example.createCriteria();
+		c.andIn("id", uuArr);
+		return uuMapper.deleteByExample(example) > 0;
+	}
+
+}

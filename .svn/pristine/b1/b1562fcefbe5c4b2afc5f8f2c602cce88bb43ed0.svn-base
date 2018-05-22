@@ -1,0 +1,26 @@
+package com.tuzhi.delivery.service.impl;
+
+import java.util.Map;
+
+import org.springframework.stereotype.Service;
+
+import com.tuzhi.delivery.service.IDeliveryService;
+
+/**
+ * @author codeZ
+ * @date 2018年3月28日 下午3:42:05
+ * 
+ */
+
+@Service
+public class DeliveryServiceImpl implements IDeliveryService {
+
+	//根据userId获取用户汇交信息
+	@Override
+	public Map<String, Object> getDeliveries(Integer userId) {
+		// TODO Auto-generated method stub
+		
+		return null;
+	}
+
+}

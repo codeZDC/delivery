@@ -1,0 +1,113 @@
+package com.tuzhi.delivery.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.base.BaseController;
+import com.tuzhi.delivery.domain.Uu;
+import com.tuzhi.delivery.service.IUuService;
+import com.tuzhi.delivery.util.BootstrapTable;
+
+/**
+ * @ClassName:UuController
+ * @Description:的控制器
+ * @author 郑德超
+ * @CreateDate 2018-03-15 14:21:24
+ */
+@Controller
+@RequestMapping("/uu")
+public class UuController extends BaseController {
+
+	@Autowired
+	private IUuService uuService;
+	
+	 /**
+	 * @title:findUuList
+	 * @description: 分页
+	 * @author 郑德超
+	 * @param uu
+	 * @CreateDate  2018-03-15 14:21:24
+	 */
+	@RequestMapping("/list")
+	@ResponseBody
+	public BootstrapTable findUuList(Uu uu){
+		PageInfo<Uu> page = uuService.findUuList(uu);
+		return bootstrapTable(page);
+	}
+	
+	/**
+	 * @title:getUuById
+	 * @description: 查询一条信息
+	 * @author 郑德超
+	 * @param id
+	 * @CreateDate  2018-03-15 14:21:24
+	 */
+	@RequestMapping("/get")
+	@ResponseBody
+	public Uu getUuById(Integer id){
+		Uu uu = uuService.getUuById(id);
+		return uu;
+	}
+	
+	
+	 /**
+	 * @title:editUu
+	 * @description: 新增
+	 * @author 郑德超
+	 * @param uu
+	 * @CreateDate  2018-03-15 14:21:24
+	 */
+	@RequestMapping("save")
+	@ResponseBody
+	public Map<String, Object> saveUu(Uu uu){
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = uuService.saveUu(uu);
+		map.put("success", flag);
+		map.put("message", "新增"+(flag?"成功":"失败"));
+		return map;
+	}
+	
+	
+	 /**
+	 * @title:editUu
+	 * @description: 修改
+	 * @author 郑德超
+	 * @param uu
+	 * @CreateDate  2018-03-15 14:21:24
+	 */
+	@RequestMapping("edit")
+	@ResponseBody
+	public Map<String, Object> editUu(Uu uu){
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = uuService.editUu(uu);
+		map.put("success", flag);
+		map.put("message", "修改"+(flag?"成功":"失败"));
+		return map;
+	}
+	
+	
+	 /**
+	 * @title:delUu
+	 * @description: 删除
+	 * @author 郑德超
+	 * @param ids	主键ID集合
+	 * @CreateDate  2018-03-15 14:21:24
+	 */
+	@RequestMapping("del")
+	@ResponseBody
+	public Map<String, Object> delUu(@RequestParam(value = "ids[]",required = false,defaultValue = "") List<Integer> ids){
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = uuService.delUu(ids);
+		map.put("success", flag);
+		map.put("message", "删除"+(flag?"成功":"失败"));
+		return map;
+	}
+}

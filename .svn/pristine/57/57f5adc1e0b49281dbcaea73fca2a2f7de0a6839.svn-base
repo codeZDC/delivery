@@ -1,0 +1,61 @@
+package com.tuzhi.delivery.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.base.BaseServiceImpl;
+import com.tuzhi.delivery.mapper.IDeliverySzdtMapper;
+import com.tuzhi.delivery.domain.DeliverySzdt;
+import com.tuzhi.delivery.service.IDeliverySzdtService;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+/**
+ * @ClassName:DeliverySzdtServiceImpl
+ * @Description:业务层接口实现类
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+@Service
+public class DeliverySzdtServiceImpl extends BaseServiceImpl<DeliverySzdt> implements IDeliverySzdtService {
+	
+	@Autowired
+	private IDeliverySzdtMapper deliverySzdtMapper;
+ 
+	public PageInfo<DeliverySzdt> findDeliverySzdtList(DeliverySzdt deliverySzdt) {
+		// TODO 分页查询
+		PageHelper.startPage(deliverySzdt.getPageNum(), deliverySzdt.getPageSize());
+		PageInfo<DeliverySzdt> pageInfo = new PageInfo<DeliverySzdt>(deliverySzdtMapper.findDeliverySzdtList(deliverySzdt));
+		
+		return pageInfo;
+	}
+	
+	public DeliverySzdt getDeliverySzdtById(Integer id){
+		// TODO 根据ID查询
+		return deliverySzdtMapper.selectByPrimaryKey(id);
+	}
+	
+	public boolean saveDeliverySzdt(DeliverySzdt deliverySzdt){
+		// TODO 新增
+		return deliverySzdtMapper.insertSelective(deliverySzdt) > 0;
+	}
+	
+	public boolean editDeliverySzdt(DeliverySzdt deliverySzdt){
+		// TODO 修改
+		return deliverySzdtMapper.updateByPrimaryKeySelective(deliverySzdt) > 0;
+	}
+	
+	public boolean delDeliverySzdt(List<Integer> deliverySzdtArr){
+		// TODO	删除
+		Example example = new Example(DeliverySzdt.class);
+		Criteria c = example.createCriteria();
+		c.andIn("id", deliverySzdtArr);
+		return deliverySzdtMapper.deleteByExample(example) > 0;
+	}
+
+}

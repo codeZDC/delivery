@@ -1,0 +1,61 @@
+package com.tuzhi.delivery.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.base.BaseServiceImpl;
+import com.tuzhi.delivery.mapper.IDeliveryZychMapper;
+import com.tuzhi.delivery.domain.DeliveryZych;
+import com.tuzhi.delivery.service.IDeliveryZychService;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+/**
+ * @ClassName:DeliveryZychServiceImpl
+ * @Description:业务层接口实现类
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+@Service
+public class DeliveryZychServiceImpl extends BaseServiceImpl<DeliveryZych> implements IDeliveryZychService {
+	
+	@Autowired
+	private IDeliveryZychMapper deliveryZychMapper;
+ 
+	public PageInfo<DeliveryZych> findDeliveryZychList(DeliveryZych deliveryZych) {
+		// TODO 分页查询
+		PageHelper.startPage(deliveryZych.getPageNum(), deliveryZych.getPageSize());
+		PageInfo<DeliveryZych> pageInfo = new PageInfo<DeliveryZych>(deliveryZychMapper.findDeliveryZychList(deliveryZych));
+		
+		return pageInfo;
+	}
+	
+	public DeliveryZych getDeliveryZychById(Integer id){
+		// TODO 根据ID查询
+		return deliveryZychMapper.selectByPrimaryKey(id);
+	}
+	
+	public boolean saveDeliveryZych(DeliveryZych deliveryZych){
+		// TODO 新增
+		return deliveryZychMapper.insertSelective(deliveryZych) > 0;
+	}
+	
+	public boolean editDeliveryZych(DeliveryZych deliveryZych){
+		// TODO 修改
+		return deliveryZychMapper.updateByPrimaryKeySelective(deliveryZych) > 0;
+	}
+	
+	public boolean delDeliveryZych(List<Integer> deliveryZychArr){
+		// TODO	删除
+		Example example = new Example(DeliveryZych.class);
+		Criteria c = example.createCriteria();
+		c.andIn("id", deliveryZychArr);
+		return deliveryZychMapper.deleteByExample(example) > 0;
+	}
+
+}

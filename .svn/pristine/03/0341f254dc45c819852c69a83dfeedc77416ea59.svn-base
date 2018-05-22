@@ -1,0 +1,48 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuzhi.delivery.mapper.IMenuMapper">
+  <resultMap id="MenuResultMap" type="com.tuzhi.delivery.domain.Menu">
+        <id column="id" property="id" />
+    <result column="name" property="name" />
+    <result column="remarks" property="remarks" />
+    <result column="icon" property="icon" />
+    <result column="pid" property="pid" />
+    <result column="created_time" property="createdTime" />
+
+  </resultMap>
+  <sql id="column_Where">
+  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+    	<if test="id != null">and id=#{id}</if>
+    	<if test="name != null and name != '' ">and name like '%${name}%'</if>
+    	<if test="remarks != null and remarks != '' ">and remarks=#{remarks}</if>
+    	<if test="icon != null and icon != '' ">and icon=#{icon}</if>
+    	<if test="pid != null">and (pid=#{pid} or pid is null) </if>
+    	<if test="createdTime != null">and created_time=#{createdTime}</if>
+
+    </trim>
+  </sql>
+  <sql id="column_List">
+    id,name,remarks,icon,pid,created_time
+  </sql>
+  
+  <!--
+  	功能：分页查询
+  -->
+  <select id="findMenuList" parameterType="com.tuzhi.delivery.domain.Menu" resultMap="MenuResultMap">
+    select	<include refid="column_List" />
+    from t_menu
+    <include refid="column_Where" />
+    <if test="sortOrder !=null and sortOrder !='' and sortName != null and sortName != ''">
+    	order by 
+    	    	<if test="'id' == sortName">  id ${sortOrder } </if>
+    	<if test="'name' == sortName">  name ${sortOrder } </if>
+    	<if test="'remarks' == sortName">  remarks ${sortOrder } </if>
+    	<if test="'icon' == sortName">  icon ${sortOrder } </if>
+    	<if test="'pid' == sortName">  pid ${sortOrder } </if>
+    	<if test="'createdTime' == sortName">  created_time ${sortOrder } </if>
+
+    </if>
+    
+  </select>
+  
+</mapper>

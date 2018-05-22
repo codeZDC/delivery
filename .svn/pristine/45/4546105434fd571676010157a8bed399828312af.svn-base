@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuzhi.delivery.mapper.IDeliveryMapper">
+   <resultMap id="userMap" type="com.tuzhi.delivery.domain.vo.UserExtend">
+    <id column="id" property="id" />
+    <result column="unit_name" property="unitName" />
+    <result column="deliveryStatus" property="deliveryStatus"/>
+    <result column="examineYear" property="examineYear"/>
+  </resultMap>
+  <select id="getDeliveries" resultType="com.tuzhi.delivery.domain.Delivery">
+  	SELECT id , xtmc xmmc , `status` ,  iscopy , remarks ,  'dlxx' TYPE FROM t_delivery_dlxx WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , xmmc xmmc , `status` ,  iscopy , remarks ,  'gccl' TYPE FROM t_delivery_gccl WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , xmmc xmmc , `status` ,  iscopy , remarks ,  'gps' TYPE FROM t_delivery_gps WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , xmmc xmmc , `status` ,  iscopy , remarks ,  'hsyx' TYPE FROM t_delivery_hsyx WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , xmmc xmmc , `status` ,  iscopy , remarks ,  'mndt' TYPE FROM t_delivery_mndt WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , tm xmmc , `status` ,  iscopy , remarks ,  'ptdt' TYPE FROM t_delivery_ptdt WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , xmmc xmmc , `status` ,  iscopy , remarks ,  'szdt' TYPE FROM t_delivery_szdt WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , xmmc xmmc , `status` ,  iscopy , remarks ,  'szw' TYPE FROM t_delivery_szw WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , xmmc xmmc , `status` ,  iscopy , remarks ,  'wxyx' TYPE FROM t_delivery_wxyx WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , jycmc xmmc , `status` ,  iscopy , remarks ,  'yqjy' TYPE FROM t_delivery_yqjy WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , xmmc xmmc , `status` ,  iscopy , remarks ,  'zych' TYPE FROM t_delivery_zych WHERE user_id = #{param1} AND year = #{param2}
+	UNION ALL
+	SELECT id , tm xmmc , `status` ,  iscopy , remarks ,  'zytz' TYPE FROM t_delivery_zytz WHERE user_id = #{param1} AND year = #{param2}
+  </select>
+  
+  <sql id="column_Where">
+  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+    	<if test="id != null">and id=#{id}</if>
+    </trim>
+  </sql>
+  
+  <update id="toExamine">
+  		update ${param1} set status = #{param2} where id = #{param3}
+  </update>
+  
+  <select id="getCompanies" resultMap="userMap">
+  	SELECT u.id id,u.unit_name unit_name,ds.status deliveryStatus ,IFNULL(ds.year,#{examineYear}) examineYear FROM t_user u 
+  		LEFT JOIN t_delivery_status ds 
+  			ON ds.`user_id`=u.`id` AND ds.`year` = #{examineYear}
+  	<where>
+  		<if test=" examineType == 0">
+  			and left(u.`delivery_zone`,4) = #{deliveryCode}
+  		</if>
+  		<if test="examineType != 0">
+  			and u.`delivery_zone` = #{deliveryCode}
+  		</if>
+  	</where>
+  </select>
+</mapper>

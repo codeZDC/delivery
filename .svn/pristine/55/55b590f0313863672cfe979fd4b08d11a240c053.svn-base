@@ -1,0 +1,41 @@
+function validate(){
+	var roleName = $("#roleName");
+	if(roleName.val() == ""){
+		alert("请输入用户名");
+		roleName.focus();
+	}
+}
+
+//添加角色点击事件
+$( "#add-role" ).on('click', function(e) {
+	e.preventDefault();
+
+	$( "#dialog-confirm" ).removeClass('hide').dialog({
+		resizable: false,
+		width: '420',
+		modal: true,
+		title: "添加角色",
+		title_html: true,
+		buttons: [
+			{
+				html: "<i class='ace-icon fa fa-floppy-o bigger-120 blue'></i>&nbsp; 保存",
+				"class" : "btn btn-white btn-info btn-bold",
+				click: function() {
+					//校验
+					validate();
+					return;
+					$( this ).dialog( "close" );
+				}
+			}
+			,
+			{
+				html: "<i class='ace-icon fa fa-times red2'></i>&nbsp; 取消",
+				"class" : "btn btn-white btn-default btn-round",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+			]
+	});
+});
+

@@ -1,0 +1,113 @@
+package com.tuzhi.delivery.controller;
+
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.base.BaseController;
+import com.tuzhi.delivery.domain.DeliveryMndt;
+import com.tuzhi.delivery.service.IDeliveryMndtService;
+import com.tuzhi.delivery.util.BootstrapTable;
+
+/**
+ * @ClassName:DeliveryMndtController
+ * @Description:的控制器
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+@Controller
+@RequestMapping("/deliveryMndt")
+public class DeliveryMndtController extends BaseController {
+
+	@Autowired
+	private IDeliveryMndtService deliveryMndtService;
+	
+	 /**
+	 * @title:findDeliveryMndtList
+	 * @description: 分页
+	 * @author 郑德超
+	 * @param deliveryMndt
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	@RequestMapping("/list")
+	@ResponseBody
+	public BootstrapTable findDeliveryMndtList(DeliveryMndt deliveryMndt){
+		PageInfo<DeliveryMndt> page = deliveryMndtService.findDeliveryMndtList(deliveryMndt);
+		return bootstrapTable(page);//PageInfo<DeliveryMndt>
+	}
+	
+	/**
+	 * @title:getDeliveryMndtById
+	 * @description: 查询一条信息
+	 * @author 郑德超
+	 * @param id
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	@RequestMapping("/get")
+	@ResponseBody
+	public DeliveryMndt getDeliveryMndtById(Integer id){
+		DeliveryMndt deliveryMndt = deliveryMndtService.getDeliveryMndtById(id);
+		return deliveryMndt;
+	}
+	
+	
+	 /**
+	 * @title:editDeliveryMndt
+	 * @description: 新增
+	 * @author 郑德超
+	 * @param deliveryMndt
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	@RequestMapping("save")
+	@ResponseBody
+	public Map<String, Object> saveDeliveryMndt(DeliveryMndt deliveryMndt){
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = deliveryMndtService.saveDeliveryMndt(deliveryMndt);
+		map.put("success", flag);
+		map.put("message", "新增"+(flag?"成功":"失败"));
+		return map;
+	}
+	
+	
+	 /**
+	 * @title:editDeliveryMndt
+	 * @description: 修改
+	 * @author 郑德超
+	 * @param deliveryMndt
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	@RequestMapping("edit")
+	@ResponseBody
+	public Map<String, Object> editDeliveryMndt(DeliveryMndt deliveryMndt){
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = deliveryMndtService.editDeliveryMndt(deliveryMndt);
+		map.put("success", flag);
+		map.put("message", "修改"+(flag?"成功":"失败"));
+		return map;
+	}
+	
+	
+	 /**
+	 * @title:delDeliveryMndt
+	 * @description: 删除
+	 * @author 郑德超
+	 * @param ids	主键ID集合
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	@RequestMapping("del")
+	@ResponseBody
+	public Map<String, Object> delDeliveryMndt(@RequestParam(value = "ids[]",required = false,defaultValue = "") List<Integer> ids){
+		Map<String, Object> map = new HashMap<String, Object>();
+		boolean flag = deliveryMndtService.delDeliveryMndt(ids);
+		map.put("success", flag);
+		map.put("message", "删除"+(flag?"成功":"失败"));
+		return map;
+	}
+}

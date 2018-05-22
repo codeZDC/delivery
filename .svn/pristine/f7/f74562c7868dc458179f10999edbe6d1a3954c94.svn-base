@@ -1,0 +1,61 @@
+package com.tuzhi.delivery.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.base.BaseServiceImpl;
+import com.tuzhi.delivery.mapper.IDeliveryPtdtMapper;
+import com.tuzhi.delivery.domain.DeliveryPtdt;
+import com.tuzhi.delivery.service.IDeliveryPtdtService;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+/**
+ * @ClassName:DeliveryPtdtServiceImpl
+ * @Description:业务层接口实现类
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+@Service
+public class DeliveryPtdtServiceImpl extends BaseServiceImpl<DeliveryPtdt> implements IDeliveryPtdtService {
+	
+	@Autowired
+	private IDeliveryPtdtMapper deliveryPtdtMapper;
+ 
+	public PageInfo<DeliveryPtdt> findDeliveryPtdtList(DeliveryPtdt deliveryPtdt) {
+		// TODO 分页查询
+		PageHelper.startPage(deliveryPtdt.getPageNum(), deliveryPtdt.getPageSize());
+		PageInfo<DeliveryPtdt> pageInfo = new PageInfo<DeliveryPtdt>(deliveryPtdtMapper.findDeliveryPtdtList(deliveryPtdt));
+		
+		return pageInfo;
+	}
+	
+	public DeliveryPtdt getDeliveryPtdtById(Integer id){
+		// TODO 根据ID查询
+		return deliveryPtdtMapper.selectByPrimaryKey(id);
+	}
+	
+	public boolean saveDeliveryPtdt(DeliveryPtdt deliveryPtdt){
+		// TODO 新增
+		return deliveryPtdtMapper.insertSelective(deliveryPtdt) > 0;
+	}
+	
+	public boolean editDeliveryPtdt(DeliveryPtdt deliveryPtdt){
+		// TODO 修改
+		return deliveryPtdtMapper.updateByPrimaryKeySelective(deliveryPtdt) > 0;
+	}
+	
+	public boolean delDeliveryPtdt(List<Integer> deliveryPtdtArr){
+		// TODO	删除
+		Example example = new Example(DeliveryPtdt.class);
+		Criteria c = example.createCriteria();
+		c.andIn("id", deliveryPtdtArr);
+		return deliveryPtdtMapper.deleteByExample(example) > 0;
+	}
+
+}

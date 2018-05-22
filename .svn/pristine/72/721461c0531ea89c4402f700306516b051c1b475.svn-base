@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN" "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.tuzhi.delivery.mapper.IUserMapper">
+  <resultMap id="UserResultMap" type="com.tuzhi.delivery.domain.vo.UserExtend">
+        <id column="id" property="id" />
+    <result column="username" property="username" />
+    <result column="password" property="password" />
+    <result column="unit_name" property="unitName" />
+    <result column="contact" property="contact" />
+    <result column="telephone" property="telephone" />
+    <result column="phone_number" property="phoneNumber" />
+    <result column="zip_code" property="zipCode" />
+    <result column="fax" property="fax" />
+    <result column="unit_property" property="unitProperty" />
+    <result column="adm_zone" property="admZone" />
+    <result column="delivery_zone" property="deliveryZone" />
+    <result column="work_addr" property="workAddr" />
+    <result column="unit_addr" property="unitAddr" />
+    <result column="org_code" property="orgCode" />
+    <result column="unitdesc" property="unitdesc" />
+    <result column="sphere_of_bus" property="sphereOfBus" />
+    <result column="qualification" property="qualification" />
+    <result column="certificate_code" property="certificateCode" />
+    <result column="legal_person" property="legalPerson" />
+    <result column="certificate_time" property="certificateTime" />
+    <result column="valiable_time" property="valiableTime" />
+    <result column="user_type" property="userType" />
+    <result column="role_id" property="roleId" />
+    <result column="created_time" property="createdTime" />
+    <result column="reserve1" property="reserve1" />
+    <result column="reserve2" property="reserve2" />
+    <!-- codeZ add 2018.03.23 -->
+    <result column="role_name" property="roleName"/>
+  </resultMap>
+  <sql id="column_Where">
+  	<trim prefix="WHERE" prefixOverrides="AND|OR">
+    	    	<if test="id != null">and u.id=#{id}</if>
+    	<if test="username != null and username != '' ">and u.username like '%${username}%'</if>
+    	<if test="password != null and password != '' ">and u.password=#{password}</if>
+    	<if test="unitName != null and unitName != '' ">and u.unit_namelike '%${unitName}%'</if>
+    	<if test="contact != null and contact != '' ">and u.contact=#{contact}</if>
+    	<if test="telephone != null and telephone != '' ">and u.telephone=#{telephone}</if>
+    	<if test="phoneNumber != null and phoneNumber != '' ">and u.phone_number=#{phoneNumber}</if>
+    	<if test="zipCode != null and zipCode != '' ">and u.zip_code=#{zipCode}</if>
+    	<if test="fax != null and fax != '' ">and u.fax=#{fax}</if>
+    	<if test="unitProperty != null">and u.unit_property=#{unitProperty}</if>
+    	<if test="admZone != null and admZone != '' ">and u.adm_zone=#{admZone}</if>
+    	<if test="deliveryZone != null and deliveryZone != '' ">and u.delivery_zone like '%${deliveryZone}%'</if>
+    	<if test="workAddr != null and workAddr != '' ">and u.work_addr=#{workAddr}</if>
+    	<if test="unitAddr != null and unitAddr != '' ">and u.unit_addr=#{unitAddr}</if>
+    	<if test="orgCode != null and orgCode != '' ">and u.org_code=#{orgCode}</if>
+    	<if test="unitdesc != null and unitdesc != '' ">and u.unitdesc=#{unitdesc}</if>
+    	<if test="sphereOfBus != null and sphereOfBus != '' ">and u.sphere_of_bus=#{sphereOfBus}</if>
+    	<if test="qualification != null">and u.qualification like '%${qualification}%'</if>
+    	<if test="certificateCode != null and certificateCode != '' ">and u.certificate_code=#{certificateCode}</if>
+    	<if test="legalPerson != null and legalPerson != '' ">and u.legal_person=#{legalPerson}</if>
+    	<if test="certificateTime != null">and u.certificate_time=#{certificateTime}</if>
+    	<if test="valiableTime != null">and u.valiable_time=#{valiableTime}</if>
+    	<if test="userType != null">and u.user_type=#{userType}</if>
+    	<if test="roleId != null">and u.role_id=#{roleId}</if>
+    	<if test="createdTime != null">and u.created_time=#{createdTime}</if>
+    	<if test="reserve1 != null and reserve1 != '' ">and u.reserve1=#{reserve1}</if>
+    	<if test="reserve2 != null and reserve2 != '' ">and u.reserve2=#{reserve2}</if>
+
+    </trim>
+  </sql>
+  <sql id="column_List">
+    u.id,u.username,u.password,u.unit_name,u.contact,u.telephone,u.phone_number,
+    u.zip_code,u.fax,u.unit_property,u.adm_zone,u.delivery_zone,u.work_addr,
+    u.unit_addr,u.org_code,u.unitdesc,u.sphere_of_bus,u.qualification,
+    u.certificate_code,u.legal_person,u.certificate_time,u.valiable_time,
+    u.user_type,u.role_id,u.created_time,u.reserve1,u.reserve2
+  </sql>
+  
+  <!--
+  	功能：分页查询
+  -->
+  <select id="findUserList" parameterType="com.tuzhi.delivery.domain.User" resultMap="UserResultMap">
+    select	<include refid="column_List" /> , r.role_name role_name
+    from t_user u Left join t_role r on u.role_id = r.id
+    <include refid="column_Where" />
+    <if test="sortOrder !=null and sortOrder !='' and sortName != null and sortName != ''">
+    	order by 
+    	    	<if test="'id' == sortName">  u.id ${sortOrder } </if>
+    	<if test="'username' == sortName">  u.username ${sortOrder } </if>
+    	<if test="'password' == sortName">  u.password ${sortOrder } </if>
+    	<if test="'unitName' == sortName">  u.unit_name ${sortOrder } </if>
+    	<if test="'contact' == sortName">  u.contact ${sortOrder } </if>
+    	<if test="'telephone' == sortName">  u.telephone ${sortOrder } </if>
+    	<if test="'phoneNumber' == sortName">  u.phone_number ${sortOrder } </if>
+    	<if test="'zipCode' == sortName">  u.zip_code ${sortOrder } </if>
+    	<if test="'fax' == sortName">  u.fax ${sortOrder } </if>
+    	<if test="'unitProperty' == sortName">  u.unit_property ${sortOrder } </if>
+    	<if test="'admZone' == sortName">  u.adm_zone ${sortOrder } </if>
+    	<if test="'deliveryZone' == sortName">  u.delivery_zone ${sortOrder } </if>
+    	<if test="'workAddr' == sortName">  u.work_addr ${sortOrder } </if>
+    	<if test="'unitAddr' == sortName">  u.unit_addr ${sortOrder } </if>
+    	<if test="'orgCode' == sortName">  u.org_code ${sortOrder } </if>
+    	<if test="'unitdesc' == sortName">  u.unitdesc ${sortOrder } </if>
+    	<if test="'sphereOfBus' == sortName">  u.sphere_of_bus ${sortOrder } </if>
+    	<if test="'qualification' == sortName">  u.qualification ${sortOrder } </if>
+    	<if test="'certificateCode' == sortName">  u.certificate_code ${sortOrder } </if>
+    	<if test="'legalPerson' == sortName">  u.legal_person ${sortOrder } </if>
+    	<if test="'certificateTime' == sortName">  u.certificate_time ${sortOrder } </if>
+    	<if test="'valiableTime' == sortName">  u.valiable_time ${sortOrder } </if>
+    	<if test="'userType' == sortName">  u.user_type ${sortOrder } </if>
+    	<if test="'roleId' == sortName">  u.role_id ${sortOrder } </if>
+    	<if test="'createdTime' == sortName">  u.created_time ${sortOrder } </if>
+    	<if test="'reserve1' == sortName">  u.reserve1 ${sortOrder } </if>
+    	<if test="'reserve2' == sortName">  u.reserve2 ${sortOrder } </if>
+
+    </if>
+    
+  </select>
+  
+</mapper>

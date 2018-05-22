@@ -1,0 +1,18 @@
+$(function(){
+	loadViewForm();
+});
+
+function loadViewForm(){
+	var id  = $('#deliverId').val();
+	var type  = $('#type').val();
+	$('#headerTitle').text(templateName[type]);
+	$.getJSON(contextPath + type+'/get',{id:id},function(res){
+		console.log(res);
+		for (var i in res) {
+			$('span[name='+i+']').text(res[i] == null ? '' : res[i]);
+			$('input[name='+i+']').val(res[i] == null ? '' : res[i]);
+		}
+		$('span[name="iscopy"]').text(res.iscopy == 0 ? '是':'否');
+		
+	});
+}

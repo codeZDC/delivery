@@ -1,0 +1,30 @@
+package com.tuzhi.delivery.controller;
+
+import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestMapping;
+
+/**
+ * @author codeZ
+ * @date 2018年3月16日 下午4:51:09
+ * 
+ */
+
+@Controller
+@RequestMapping("page")
+public class PageUrlController {
+
+	/**
+	 * 页面跳转公共路径(根据下面的模块名称和操作跳转到具体的页面)
+	 * @param module  模块名称
+	 * @param hanlder 操作名称
+	 * @return 视图路径(具体路径需要结合springmvc里面的模型视图控制器的前缀和后缀)
+	 */
+	@RequestMapping("/{module}/{hanlder}")
+	public String page(@PathVariable(name="module")String module ,
+				@PathVariable(name="hanlder")String hanlder){
+		
+		return module + "/" + hanlder ;
+	}
+	
+}

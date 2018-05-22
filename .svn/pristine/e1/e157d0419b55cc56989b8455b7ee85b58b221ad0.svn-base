@@ -1,0 +1,250 @@
+var contextPath = parent.$('#contextPath').val();
+console.log(contextPath);
+var localData = {};
+$(function(){
+	//页面表单初始化
+	loadTable(1);
+	//用户页面需要setRoleData();
+	//设置父级菜单下拉框
+	//这里不应该使用这样的方式获取角色信息,,,应该使用实体扩展类添加一个属性显示就好
+	setRoleData();
+});
+
+//加载列表数据
+function loadTable(pageNum){
+	var pageSize = $('#pageSize-select').val();
+	//var searchText = $('#search-input').val().replace('/\s/g','');
+	
+	$.getJSON(contextPath + 'user/list',{pageNum:pageNum,pageSize:pageSize},function(res){
+		buildTable(res.rows);
+		initPaginationBar(res.total,pageSize,pageNum,function(currentPage){loadTable(currentPage);});
+	});
+}
+//初始化角色信息//
+function setRoleData(){
+	$.ajax({
+		url : contextPath + 'role/list',
+		type:'get',
+		dataType:'json',
+		async:false,
+		success:function(res){
+			$.each(res.rows,function(index,per){
+				//初始化下拉框信息
+				$(':input[name=roleId]').append($('<option>').val(per.id).text(per.roleName));
+			});
+		},
+		error:function(){
+			alert('获取角色失败,请稍后重试!')
+		}
+	});
+}
+function buildTable(data){
+	localData = data ;
+	var index,name,icon,pname,remarks,createdTime
+	handler =  	$('<td>').append('<div class="hidden-sm hidden-xs action-buttons">'
+				+'<a class="green user-edit" href="#"> <i class="ace-icon fa fa-pencil bigger-130"></i>'
+				+'</a> <a class="red user-remove" href="#"> <i '
+				+'class="ace-icon fa fa-trash-o bigger-130"></i></a></div>');
+	var tbody = $('#user-table tbody').empty();
+	$.each(data,function(temp , per){
+		index = $('<td>').text(temp + 1);
+		name = $('<td>').text(per.name); 
+		icon = $('<td>').append($('<i>').addClass('bigger-130 fa fa-'+per.icon)); 
+		pname = $('<td>').text(roleData[per.roleId]); 
+		remarks = $('<td>').text(per.remarks); 
+		createdTime = $('<td>').text(per.createdTime) ; 
+		$('<tr>').attr('id',per.id).append(index).append(name).append(icon)
+		.append(pname).append(remarks).append(createdTime)
+		.append(handler.clone()).appendTo(tbody);
+	})
+}
+
+//添加菜单点击事件
+$( "#user-add" ).on('click', function(e) {
+	//去除图标选择旁边的显示 i
+	e.preventDefault();
+	$('#user-add-form')[0].reset();
+	//删除市级,区县信息
+	$('.district option:not(.no),.city option:not(.no)').remove();
+	$( "#user-add-modal" ).removeClass('hide').dialog({
+		resizable: false,
+		width: '60%',
+		modal: true,
+		title: "添加菜单",
+		title_html: true,
+		buttons: [
+			{
+				html: "<i class='ace-icon fa fa-floppy-o bigger-120 blue'></i>&nbsp; 保存",
+				"class" : "btn btn-white btn-info btn-bold",
+				click: function() {
+					$('#user-add-modal').next().find('button').attr('disabled','disabled');
+					//校验
+					//if(!validate()) return;
+					$.post(contextPath + 'user/save',$('#user-add-modal').serialize(),function(res){
+						alert(res.message);
+						loadTable(9999);
+						$("#user-add-modal").dialog( "close" );
+					},'JSON');
+				}
+			}
+			,
+			{
+				html: "<i class='ace-icon fa fa-times red2'></i>&nbsp; 取消",
+				"class" : "btn btn-white btn-default btn-round",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+			]
+	});
+});
+//编辑菜单,,本地数据
+$(document).on('click','.user-edit',function(){
+	var id = $(this).parents('tr').attr('id');
+	var currentPage = $('#paginationBar .current:not(:hidden)').text();
+	//假如自己是一级菜单隐藏下拉框中的自己
+	$.each(localData,function(index,per){
+		if(per.id == id){
+			for(var key in per){
+				$('#user-edit-form [name='+key+']').val(per[key]);
+			}
+			if(!per.pid){
+				$(':input[name=pid] option[value='+id+']').hide();
+			}
+			//添加图标
+		}
+		$( "#user-edit-modal" ).removeClass('hide').dialog({
+			resizable: false,
+			width: '420',
+			modal: true,
+			title: "编辑菜单",
+			title_html: true,
+			buttons: [
+				{
+					html: "<i class='ace-icon fa fa-floppy-o bigger-120 blue'></i>&nbsp; 保存",
+					"class" : "btn btn-white btn-info btn-bold",
+					click: function() {
+						$('#user-edit-modal').next().find('button').attr('disabled','disabled');
+						//if(!validate()) return;
+						$.post(contextPath + 'user/edit',$('#user-edit-form').serialize(),function(res){
+							alert(res.message);
+							loadTable(currentPage);
+							$("#user-edit-modal").dialog( "close" );
+						},'JSON');
+					}
+				}
+				,
+				{
+					html: "<i class='ace-icon fa fa-times red2'></i>&nbsp; 取消",
+					"class" : "btn btn-white btn-default btn-round",
+					click: function() {
+						$( this ).dialog( "close" );
+					}
+				}
+				]
+		});
+	});
+})
+//删除角色
+$(document).on('click','.user-remove',function(){
+	var id  = $(this).parents('tr').attr('id');
+	showConfirm(function(){
+		$.post(contextPath + 'user/del' ,{ids:[id]} ,function(res){
+			alert(res.message);
+			if(res.success){
+				loadTable(1);
+				cancelConfirm();
+			}
+		},'jSON');
+	});
+})
+
+$('#pageSize-select').change(function(){
+	loadTable(1);
+});
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+//添加查询按钮点击事件
+$( "#searchButten" ).on('click', function(e) {
+	e.preventDefault();
+	
+	var width = 400;//屏幕的宽
+	
+	$( "#serachModel" ).removeClass('hide').dialog({
+		resizable: false,
+		width: width,//弹窗的宽
+		modal: true,
+		title: "查询",
+		title_html: true,
+		buttons: [
+			{
+				html: "<i class='ace-icon fa fa-search bigger-120 '></i>&nbsp; 查询",
+				"class" : "btn btn-white btn-purple btn-bold",
+				click: function() {
+					//查询页面
+					search();
+					return;
+					$( this ).dialog( "close" );
+				}
+			}
+			,
+			{
+				html: "<i class='ace-icon fa fa-times red2'></i>&nbsp; 取消",
+				"class" : "btn btn-white btn-default btn-round",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+			]
+	});
+});
+
+
+//添加用户授权点击事件
+$( "#userRight" ).on('click', function(e) {
+	e.preventDefault();
+	
+	var width = 300;//屏幕的宽
+	
+	$( "#rightModel" ).removeClass('hide').dialog({
+		resizable: false,
+		width: width,//弹窗的宽
+		modal: true,
+		title: "授权",
+		title_html: true,
+		buttons: [
+			{
+				html: "<i class='ace-icon fa fa-key bigger-120 '></i>&nbsp; 用户授权",
+				"class" : "btn btn-primary btn-white dropdown-toggle",
+				click: function() {
+					//查询页面
+					search();
+					return;
+					$( this ).dialog( "close" );
+				}
+			}
+			,
+			{
+				html: "<i class='ace-icon fa fa-times red2'></i>&nbsp; 取消",
+				"class" : "btn btn-white btn-default btn-round",
+				click: function() {
+					$( this ).dialog( "close" );
+				}
+			}
+			]
+	});
+});
+

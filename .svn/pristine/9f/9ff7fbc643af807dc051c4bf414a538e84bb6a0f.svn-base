@@ -1,0 +1,32 @@
+package com.tuzhi.delivery.controller;
+
+import java.util.Map;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
+
+import com.tuzhi.delivery.base.BaseController;
+import com.tuzhi.delivery.service.IDeliveryService;
+import com.tuzhi.delivery.util.Tz;
+
+/**
+ * @author codeZ
+ * @date 2018年3月28日 下午3:35:09
+ * 
+ */
+@RestController
+@RequestMapping("delivery")
+public class DeliveryController extends BaseController {
+
+	@Autowired
+	private IDeliveryService deliveryService;
+	
+	@RequestMapping("getItem")
+	public Tz getDeliveries(){
+		//通过userID获取汇交项目,//status : 201草稿 202正在审核  203驳回 204已汇交
+		Map<String , Object> map =  deliveryService.getDeliveries(getUserId());
+		return Tz.success(map.get("status").toString());
+	}
+
+}

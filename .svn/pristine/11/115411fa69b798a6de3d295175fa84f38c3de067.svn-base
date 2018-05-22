@@ -1,0 +1,23 @@
+package com.tuzhi.delivery.domain.vo;
+
+import com.tuzhi.delivery.domain.User;
+
+/**
+ * @author codeZ
+ * @date 2018年3月23日 上午10:57:13
+ * 
+ */
+public class UserExtend extends User{
+	
+	//保存用户的角色名称
+	private String roleName;
+
+	public String getRoleName() {
+		return roleName;
+	}
+
+	public void setRoleName(String roleName) {
+		this.roleName = roleName;
+	}
+	
+}

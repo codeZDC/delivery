@@ -1,0 +1,61 @@
+package com.tuzhi.delivery.service.impl;
+
+import java.util.List;
+
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.stereotype.Service;
+
+import com.github.pagehelper.PageHelper;
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.base.BaseServiceImpl;
+import com.tuzhi.delivery.mapper.IDeliveryYqjyMapper;
+import com.tuzhi.delivery.domain.DeliveryYqjy;
+import com.tuzhi.delivery.service.IDeliveryYqjyService;
+
+import tk.mybatis.mapper.entity.Example;
+import tk.mybatis.mapper.entity.Example.Criteria;
+
+/**
+ * @ClassName:DeliveryYqjyServiceImpl
+ * @Description:业务层接口实现类
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+@Service
+public class DeliveryYqjyServiceImpl extends BaseServiceImpl<DeliveryYqjy> implements IDeliveryYqjyService {
+	
+	@Autowired
+	private IDeliveryYqjyMapper deliveryYqjyMapper;
+ 
+	public PageInfo<DeliveryYqjy> findDeliveryYqjyList(DeliveryYqjy deliveryYqjy) {
+		// TODO 分页查询
+		PageHelper.startPage(deliveryYqjy.getPageNum(), deliveryYqjy.getPageSize());
+		PageInfo<DeliveryYqjy> pageInfo = new PageInfo<DeliveryYqjy>(deliveryYqjyMapper.findDeliveryYqjyList(deliveryYqjy));
+		
+		return pageInfo;
+	}
+	
+	public DeliveryYqjy getDeliveryYqjyById(Integer id){
+		// TODO 根据ID查询
+		return deliveryYqjyMapper.selectByPrimaryKey(id);
+	}
+	
+	public boolean saveDeliveryYqjy(DeliveryYqjy deliveryYqjy){
+		// TODO 新增
+		return deliveryYqjyMapper.insertSelective(deliveryYqjy) > 0;
+	}
+	
+	public boolean editDeliveryYqjy(DeliveryYqjy deliveryYqjy){
+		// TODO 修改
+		return deliveryYqjyMapper.updateByPrimaryKeySelective(deliveryYqjy) > 0;
+	}
+	
+	public boolean delDeliveryYqjy(List<Integer> deliveryYqjyArr){
+		// TODO	删除
+		Example example = new Example(DeliveryYqjy.class);
+		Criteria c = example.createCriteria();
+		c.andIn("id", deliveryYqjyArr);
+		return deliveryYqjyMapper.deleteByExample(example) > 0;
+	}
+
+}

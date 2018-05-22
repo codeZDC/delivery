@@ -1,0 +1,26 @@
+package com.tuzhi.delivery.mapper;
+
+import java.util.List;
+
+import com.tuzhi.delivery.domain.DeliverySzdt;
+
+import tk.mybatis.mapper.common.Mapper;
+
+ /**
+ * @ClassName:DeliverySzdtMapper
+ * @Description:数据层接口
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+public interface IDeliverySzdtMapper extends Mapper<DeliverySzdt> {
+	
+	/**
+	 * @title:findDeliverySzdtList
+	 * @description: 查询列表
+	 * @author 郑德超
+	 * @param deliverySzdt
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	List<DeliverySzdt> findDeliverySzdtList(DeliverySzdt deliverySzdt);
+	
+}

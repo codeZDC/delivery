@@ -1,0 +1,26 @@
+package com.tuzhi.delivery.mapper;
+
+import java.util.List;
+
+import com.tuzhi.delivery.domain.DeliveryZych;
+
+import tk.mybatis.mapper.common.Mapper;
+
+ /**
+ * @ClassName:DeliveryZychMapper
+ * @Description:数据层接口
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+public interface IDeliveryZychMapper extends Mapper<DeliveryZych> {
+	
+	/**
+	 * @title:findDeliveryZychList
+	 * @description: 查询列表
+	 * @author 郑德超
+	 * @param deliveryZych
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	List<DeliveryZych> findDeliveryZychList(DeliveryZych deliveryZych);
+	
+}

@@ -1,0 +1,61 @@
+package com.tuzhi.delivery.service;
+
+import java.util.List;
+
+import com.tuzhi.delivery.base.IBaseService;
+import com.github.pagehelper.PageInfo;
+import com.tuzhi.delivery.domain.DeliveryGps;
+
+/**
+ * @ClassName:IDeliveryGpsService
+ * @Description:业务层接口
+ * @author 郑德超
+ * @CreateDate 2018-03-26 17:43:23
+ */
+public interface IDeliveryGpsService extends IBaseService<DeliveryGps>{
+
+	/**
+	 * @title:findDeliveryGpsList
+	 * @description: 查询列表
+	 * @author 郑德超
+	 * @param deliveryGps
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	PageInfo<DeliveryGps> findDeliveryGpsList(DeliveryGps deliveryGps);
+	
+	/**
+	 * @title:getDeliveryGpsById
+	 * @description: 根据ID查询信息
+	 * @author 郑德超
+	 * @param id	主键
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	DeliveryGps getDeliveryGpsById(Integer id);
+	
+	/**
+	 * @title:saveDeliveryGps
+	 * @description: 新增
+	 * @author 郑德超
+	 * @param deliveryGps
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	boolean saveDeliveryGps(DeliveryGps deliveryGps);
+	
+	 /**
+	 * @title:editDeliveryGps
+	 * @description: 修改
+	 * @author 郑德超
+	 * @param deliveryGps
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	boolean editDeliveryGps(DeliveryGps deliveryGps);
+	
+	/**
+	 * @title:delDeliveryGps
+	 * @description: 删除
+	 * @author 郑德超
+	 * @param deliveryGpsArr	主键编号集合
+	 * @CreateDate  2018-03-26 17:43:23
+	 */
+	boolean delDeliveryGps(List<Integer> deliveryGpsArr);
+}
