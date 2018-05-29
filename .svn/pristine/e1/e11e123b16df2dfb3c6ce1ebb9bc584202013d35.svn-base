@@ -1,9 +1,0 @@
-/*公共Css*/
-.row {
-	margin-right: 0px;
-	margin-left: 0px;
-}
-
-.table {
-	margin-bottom: 0;
-}

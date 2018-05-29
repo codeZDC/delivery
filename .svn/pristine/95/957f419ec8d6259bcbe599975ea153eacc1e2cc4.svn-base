@@ -1,8 +1,0 @@
-#redis相关配置
-#redis.host=120.77.244.207
-redis.host=120.77.244.207
-redis.port=6379
-redis.timeout=5000
-#部门信息缓存配置
-#缓存部门信息的key
-DEPARTMENT_REDIS_KEY=DEPARTMENT_REDIS_KEY

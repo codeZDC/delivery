@@ -1,3 +1,0 @@
-$('#add-menu').click(function(){
-	//parent.$("#modal").show();
-});
